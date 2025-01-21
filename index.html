@@ -37,10 +37,13 @@
         let xboxConnected = false;
         let audioEnabled = false;
         let lastThrottleZone = "idle"; // Track last played sound
+        let lastThrottleUpdate = Date.now();
 
         function enableAudio() {
-            document.getElementById("idle").play();
-            document.getElementById("idle").pause();
+            let idle = document.getElementById("idle");
+            idle.volume = 0.8; // Lower volume slightly to prevent clipping
+            idle.play();
+            idle.pause();
             audioEnabled = true;
             alert("Audio enabled! Move throttle to hear engine sounds.");
         }
@@ -52,6 +55,10 @@
         async function sendThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
             document.getElementById("throttle").value = value;
+
+            if (Date.now() - lastThrottleUpdate < 100) return; // Limit updates to every 100ms
+            lastThrottleUpdate = Date.now();
+
             fetch(esp32IP + "/throttle?value=" + value);
             updateEngineSound(value);
         }
@@ -69,30 +76,58 @@
 
             let newZone = "idle"; // Default to idle
 
-            if (throttle >= 75) {
-                newZone = "max"; // Force play max_rpm.wav past 75%
-            } else if (throttle > 0) {
-                newZone = "rev";
+            if (throttle >= 70) {
+                newZone = "max"; // Ensure max_rpm.wav plays smoothly
+            } else if (throttle > 10) {
+                newZone = "rev"; // Allow rev.wav to play above 10%
             }
 
             if (newZone !== lastThrottleZone) {
-                idle.pause();
-                rev.pause();
-                max.pause();
-
-                if (newZone === "idle") idle.play();
-                if (newZone === "rev") rev.play();
-                if (newZone === "max") max.play();
-
+                if (newZone === "idle") {
+                    fadeIn(idle);
+                    fadeOut(rev);
+                    fadeOut(max);
+                } else if (newZone === "rev") {
+                    fadeOut(idle);
+                    fadeIn(rev);
+                    fadeOut(max);
+                } else if (newZone === "max") {
+                    fadeOut(idle);
+                    fadeOut(rev);
+                    fadeIn(max);
+                }
                 lastThrottleZone = newZone; // Store last played sound
             }
         }
 
-        // 🎮 Xbox Controller Support
+        function fadeIn(audioElement) {
+            audioElement.volume = 0;
+            audioElement.play();
+            let fade = setInterval(() => {
+                if (audioElement.volume < 0.8) {
+                    audioElement.volume += 0.05;
+                } else {
+                    clearInterval(fade);
+                }
+            }, 50);
+        }
+
+        function fadeOut(audioElement) {
+            let fade = setInterval(() => {
+                if (audioElement.volume > 0.1) {
+                    audioElement.volume -= 0.05;
+                } else {
+                    audioElement.pause();
+                    clearInterval(fade);
+                }
+            }, 50);
+        }
+
+        // 🎮 Xbox Controller Support (Optimized for Mobile)
         window.addEventListener("gamepadconnected", (event) => {
             xboxConnected = true;
             document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Connected!";
-            gameLoop();
+            requestAnimationFrame(gameLoop);
         });
 
         function gameLoop() {
@@ -105,10 +140,10 @@
                 sendThrottle(throttleValue);
                 sendSteer(steerValue);
             }
-            setTimeout(gameLoop, 50); // Throttle updates to 50ms
+            requestAnimationFrame(gameLoop); // Optimized refresh for mobile
         }
 
-        // 🕹 Touch Steering (Joystick Hidden but Functional)
+        // 🕹 Touch Steering (Hidden but Functional)
         document.addEventListener("touchmove", function(event) {
             let touch = event.touches[0];
             let dx = touch.clientX - window.innerWidth / 2;
