@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP32 Car Controller</title>
     <style>
-        body { text-align: center; font-family: Arial, sans-serif; }
-        button { font-size: 20px; padding: 10px; margin: 10px; width: 100px; }
+        body { text-align: center; font-family: Arial, sans-serif; overflow: hidden; }
+        button { font-size: 20px; padding: 10px; margin: 10px; width: 150px; }
         input { width: 80%; }
-        #joystick-container { width: 150px; height: 150px; background: lightgray; border-radius: 50%; position: relative; margin: auto; }
+        #joystick-container { width: 150px; height: 150px; background: lightgray; border-radius: 50%; position: relative; margin: auto; touch-action: none; }
         #joystick { width: 50px; height: 50px; background: black; border-radius: 50%; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
     </style>
 </head>
@@ -16,6 +16,7 @@
     <h1>ESP32 Car Controller</h1>
     <p>Use the joystick or Xbox controller to drive the car.</p>
 
+    <button onclick="enableAudio()">Start Audio</button>
     <button onclick="connectToESP32()">Connect to ESP32</button>
 
     <br><br>
@@ -29,12 +30,12 @@
     <p>Steering: <span id="steeringValue">50</span>%</p>
 
     <br><br>
-    <button onclick="sendSteer(25)">⬅ Left</button>
-    <button onclick="sendSteer(75)">Right ➡</button>
+    <button onclick="sendSteer(0)">⬅ Full Left</button>
+    <button onclick="sendSteer(100)">Full Right ➡</button>
 
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
 
-    <!-- Engine Sound Files (Updated to WAV format) -->
+    <!-- Engine Sound Files (Updated WAV format) -->
     <audio id="idle" src="https://jmckenzie08.github.io/esp32-car-control/idle.wav" preload="auto" loop></audio>
     <audio id="rev" src="https://jmckenzie08.github.io/esp32-car-control/rev.wav" preload="auto" loop></audio>
     <audio id="max" src="https://jmckenzie08.github.io/esp32-car-control/max_rpm.wav" preload="auto" loop></audio>
@@ -42,6 +43,14 @@
     <script>
         let esp32IP = "http://192.168.4.1"; // Change if ESP32 is in home Wi-Fi mode
         let xboxConnected = false;
+        let audioEnabled = false;
+
+        function enableAudio() {
+            document.getElementById("idle").play();
+            document.getElementById("idle").pause();
+            audioEnabled = true;
+            alert("Audio enabled! Move throttle to hear engine sounds.");
+        }
 
         async function connectToESP32() {
             alert("Ensure your phone is connected to ESP32's Wi-Fi, then use this page.");
@@ -49,6 +58,7 @@
 
         async function sendThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
+            document.getElementById("throttle").value = value;
             fetch(esp32IP + "/throttle?value=" + value);
             updateEngineSound(value);
         }
@@ -59,6 +69,8 @@
         }
 
         function updateEngineSound(throttle) {
+            if (!audioEnabled) return;
+
             document.getElementById("idle").pause();
             document.getElementById("rev").pause();
             document.getElementById("max").pause();
@@ -83,46 +95,27 @@
             if (!xboxConnected) return;
             let gamepad = navigator.getGamepads()[0];
             if (gamepad) {
-                let throttleValue = Math.round((gamepad.buttons[7].value) * 100); // RT for throttle
-                let steerValue = Math.round((gamepad.axes[0] + 1) * 50); // Left joystick X-axis for steering
-                
+                let throttleValue = Math.round((gamepad.buttons[7].value) * 100);
+                let steerValue = Math.round((gamepad.axes[0] + 1) * 50);
+
                 sendThrottle(throttleValue);
                 sendSteer(steerValue);
             }
             requestAnimationFrame(gameLoop);
         }
 
-        // 🕹 Joystick Movement
-        let joystick = document.getElementById("joystick");
-        let container = document.getElementById("joystick-container");
-
-        let containerRect = container.getBoundingClientRect();
-        let centerX = containerRect.left + containerRect.width / 2;
-        let centerY = containerRect.top + containerRect.height / 2;
-
-        container.addEventListener("touchmove", function(event) {
+        // 🕹 Improved Joystick Performance
+        document.getElementById("joystick-container").addEventListener("touchmove", function(event) {
+            event.preventDefault();
             let touch = event.touches[0];
-            let dx = touch.clientX - centerX;
-            let dy = touch.clientY - centerY;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            let maxDistance = container.offsetWidth / 2;
-
-            if (distance > maxDistance) {
-                dx = (dx / distance) * maxDistance;
-                dy = (dy / distance) * maxDistance;
-            }
-
-            joystick.style.transform = `translate(${dx}px, ${dy}px)`;
-
-            let steerValue = Math.round(((dx / maxDistance) + 1) * 50);
-            sendSteer(steerValue);
+            let dx = touch.clientX - this.offsetLeft - this.offsetWidth / 2;
+            let steerValue = Math.round(((dx / (this.offsetWidth / 2)) + 1) * 50);
+            sendSteer(Math.max(0, Math.min(100, steerValue)));
         });
 
-        container.addEventListener("touchend", function() {
-            joystick.style.transform = "translate(-50%, -50%)";
+        document.getElementById("joystick-container").addEventListener("touchend", function() {
             sendSteer(50);
         });
-
     </script>
 </body>
 </html>
