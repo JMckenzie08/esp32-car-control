@@ -34,13 +34,13 @@
 
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
 
-    <!-- Engine Sound Files -->
-    <audio id="idle" src="https://JMckenzie08.github.io/esp32-car-control/idle.mp3" preload="auto" loop></audio>
-    <audio id="rev" src="https://JMckenzie08.github.io/esp32-car-control/rev.mp3" preload="auto" loop></audio>
-    <audio id="max" src="https://JMckenzie08.github.io/esp32-car-control/max_rpm.mp3" preload="auto" loop></audio>
+    <!-- Engine Sound Files (Updated to WAV format) -->
+    <audio id="idle" src="https://jmckenzie08.github.io/esp32-car-control/idle.wav" preload="auto" loop></audio>
+    <audio id="rev" src="https://jmckenzie08.github.io/esp32-car-control/rev.wav" preload="auto" loop></audio>
+    <audio id="max" src="https://jmckenzie08.github.io/esp32-car-control/max_rpm.wav" preload="auto" loop></audio>
 
     <script>
-        let esp32IP = "http://192.168.4.1"; // Change this if ESP32 is in home Wi-Fi mode
+        let esp32IP = "http://192.168.4.1"; // Change if ESP32 is in home Wi-Fi mode
         let xboxConnected = false;
 
         async function connectToESP32() {
