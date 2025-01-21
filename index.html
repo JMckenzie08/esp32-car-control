@@ -44,6 +44,7 @@
         let esp32IP = "http://192.168.4.1"; // Change if ESP32 is in home Wi-Fi mode
         let xboxConnected = false;
         let audioEnabled = false;
+        let lastThrottleZone = "idle"; // Track last sound playing
 
         function enableAudio() {
             document.getElementById("idle").play();
@@ -71,16 +72,29 @@
         function updateEngineSound(throttle) {
             if (!audioEnabled) return;
 
-            document.getElementById("idle").pause();
-            document.getElementById("rev").pause();
-            document.getElementById("max").pause();
+            let idle = document.getElementById("idle");
+            let rev = document.getElementById("rev");
+            let max = document.getElementById("max");
 
-            if (throttle == 0) {
-                document.getElementById("idle").play();
-            } else if (throttle < 50) {
-                document.getElementById("rev").play();
-            } else {
-                document.getElementById("max").play();
+            let newZone = "idle"; // Default to idle
+
+            if (throttle > 50) {
+                newZone = "max";
+            } else if (throttle > 0) {
+                newZone = "rev";
+            }
+
+            // Only switch audio if the zone actually changes
+            if (newZone !== lastThrottleZone) {
+                idle.pause();
+                rev.pause();
+                max.pause();
+
+                if (newZone === "idle") idle.play();
+                if (newZone === "rev") rev.play();
+                if (newZone === "max") max.play();
+
+                lastThrottleZone = newZone; // Store current sound zone
             }
         }
 
@@ -101,7 +115,7 @@
                 sendThrottle(throttleValue);
                 sendSteer(steerValue);
             }
-            requestAnimationFrame(gameLoop);
+            setTimeout(gameLoop, 50); // Throttle updates to 50ms
         }
 
         // 🕹 Improved Joystick Performance
