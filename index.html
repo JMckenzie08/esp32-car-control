@@ -32,18 +32,20 @@
         let xboxConnected = false;
         let audioContext;
         let engineSound;
-        let throttleLevel = 0;
         let gainNode;
         let playbackRate = 1.0;
 
+        // 🎵 Start Engine Sound (Preloads & Plays)
         async function startEngine() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 gainNode = audioContext.createGain();
                 gainNode.gain.value = 0.8; // Set initial volume
 
-                // Load engine sound
-                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/engine_loop.wav");
+                // 🔹 Load engine loop sound from GitHub
+                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/engine_loop.wav");
+
+
                 engineSound.loop = true;
                 engineSound.connect(gainNode);
                 gainNode.connect(audioContext.destination);
@@ -52,6 +54,7 @@
             alert("Engine sound started! Move throttle to change RPM.");
         }
 
+        // 🎵 Load Sound File & Return Audio Source
         async function loadSound(url) {
             let response = await fetch(url);
             let arrayBuffer = await response.arrayBuffer();
@@ -61,25 +64,28 @@
             return source;
         }
 
+        // 🚗 Connect to ESP32
         async function connectToESP32() {
             alert("Ensure your phone is connected to ESP32's Wi-Fi, then use this page.");
         }
 
+        // 🔹 Update Throttle Value & Engine RPM
         async function sendThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
             document.getElementById("throttle").value = value;
-            throttleLevel = value / 100;
-
+            
             fetch(esp32IP + "/throttle?value=" + value);
             updateEngineRPM(value);
         }
 
+        // 🔹 Update Steering Value
         async function sendSteer(value) {
             document.getElementById("steeringValue").innerText = value;
             document.getElementById("steering").value = value;
             fetch(esp32IP + "/steer?value=" + value);
         }
 
+        // 🎵 Adjust Engine RPM Based on Throttle
         function updateEngineRPM(throttle) {
             if (engineSound) {
                 playbackRate = 0.5 + (throttle / 100) * 1.5; // Adjust RPM scaling
@@ -87,13 +93,14 @@
             }
         }
 
-        // 🎮 Xbox Controller Support
+        // 🎮 Xbox Controller Support (Throttle & Steering)
         window.addEventListener("gamepadconnected", (event) => {
             xboxConnected = true;
             document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Connected!";
             requestAnimationFrame(gameLoop);
         });
 
+        // 🔹 Xbox Controller Input Loop
         function gameLoop() {
             if (!xboxConnected) return;
             let gamepad = navigator.getGamepads()[0];
