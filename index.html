@@ -14,7 +14,7 @@
     <h1>ESP32 Car Controller</h1>
     <p>Use the throttle & steering sliders or Xbox controller to drive the car.</p>
 
-    <button onclick="startEngine()">Start Engine</button>
+    <button onclick="enableAudio()">Start Engine</button>
     <button onclick="connectToESP32()">Connect to ESP32</button>
 
     <br><br>
@@ -27,80 +27,73 @@
 
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
 
+    <!-- Engine Sound Files -->
+    <audio id="idle" src="https://jmckenzie08.github.io/esp32-car-control/idle.wav" preload="auto" loop></audio>
+    <audio id="rev" src="https://jmckenzie08.github.io/esp32-car-control/rev.wav" preload="auto" loop></audio>
+    <audio id="max" src="https://jmckenzie08.github.io/esp32-car-control/max_rpm.wav" preload="auto" loop></audio>
+
     <script>
         let esp32IP = "http://192.168.4.1"; 
         let xboxConnected = false;
-        let audioContext;
-        let engineSound;
-        let gainNode;
-        let playbackRate = 1.0;
+        let lastThrottleZone = "idle"; // Track last sound played
 
-        // 🎵 Start Engine Sound (Preloads & Plays)
-        async function startEngine() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                gainNode = audioContext.createGain();
-                gainNode.gain.value = 0.8;
-
-                engineSound = await loadSound("https://raw.githubusercontent.com/JMckenzie08/esp32-car-control/main/sounds/engine_loop.wav");
-
-
-                engineSound.loop = true;
-                engineSound.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                engineSound.start(0);
-            }
-            alert("Engine sound started! Move throttle to change RPM.");
+        function enableAudio() {
+            document.getElementById("idle").play();
+            document.getElementById("idle").pause(); 
+            alert("Engine sound enabled! Move throttle to hear engine sounds.");
         }
 
-        // 🎵 Load Sound File & Return Audio Source
-        async function loadSound(url) {
-            let response = await fetch(url);
-            let arrayBuffer = await response.arrayBuffer();
-            let audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-            let source = audioContext.createBufferSource();
-            source.buffer = audioBuffer;
-            source.playbackRate.value = 1.0;
-            return source;
-        }
-
-        // 🚗 Connect to ESP32
         async function connectToESP32() {
             alert("Ensure your phone is connected to ESP32's Wi-Fi, then use this page.");
         }
 
-        // 🔹 Update Throttle Value & Engine RPM
         async function sendThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
             document.getElementById("throttle").value = value;
             
             fetch(esp32IP + "/throttle?value=" + value);
-            updateEngineRPM(value);
+            updateEngineSound(value);
         }
 
-        // 🔹 Update Steering Value
         async function sendSteer(value) {
             document.getElementById("steeringValue").innerText = value;
             document.getElementById("steering").value = value;
             fetch(esp32IP + "/steer?value=" + value);
         }
 
-        // 🎵 Adjust Engine RPM Based on Throttle
-        function updateEngineRPM(throttle) {
-            if (engineSound) {
-                playbackRate = 0.5 + (throttle / 100) * 1.5; 
-                engineSound.playbackRate.value = playbackRate;
+        function updateEngineSound(throttle) {
+            let idle = document.getElementById("idle");
+            let rev = document.getElementById("rev");
+            let max = document.getElementById("max");
+
+            let newZone = "idle"; 
+
+            if (throttle >= 70) {
+                newZone = "max";
+            } else if (throttle > 10) {
+                newZone = "rev";
+            }
+
+            if (newZone !== lastThrottleZone) {
+                idle.pause();
+                rev.pause();
+                max.pause();
+
+                if (newZone === "idle") idle.play();
+                if (newZone === "rev") rev.play();
+                if (newZone === "max") max.play();
+
+                lastThrottleZone = newZone;
             }
         }
 
-        // 🎮 Xbox Controller Support (Throttle & Steering)
+        // 🎮 Xbox Controller Support
         window.addEventListener("gamepadconnected", (event) => {
             xboxConnected = true;
             document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Connected!";
             requestAnimationFrame(gameLoop);
         });
 
-        // 🔹 Xbox Controller Input Loop
         function gameLoop() {
             if (!xboxConnected) return;
             let gamepad = navigator.getGamepads()[0];
