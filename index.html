@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP32 Car Controller</title>
-    <script src="https://cdn.jsdelivr.net/gh/Antonio-R1/engine-sound-generator/enginesound.min.js"></script>
+    <script src="https://markeasting.github.io/engine/engine.js"></script>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; overflow: hidden; }
         button { font-size: 20px; padding: 10px; margin: 10px; width: 150px; }
@@ -31,14 +31,15 @@
     <script>
         let esp32IP = "http://192.168.4.1"; // Change if ESP32 is in home Wi-Fi mode
         let xboxConnected = false;
-        let engineSound;
+        let engine = null;
 
         function startEngine() {
-            engineSound = new EngineSound({
-                exhaustCount: 2,
-                volume: 0.8
+            engine = new Engine({ 
+                volume: 0.8,
+                minRPM: 800,
+                maxRPM: 7000
             });
-            engineSound.start();
+            engine.start();
             alert("Engine sound started! Move throttle to change RPM.");
         }
 
@@ -56,17 +57,18 @@
 
         async function sendSteer(value) {
             document.getElementById("steeringValue").innerText = value;
+            document.getElementById("steering").value = value;
             fetch(esp32IP + "/steer?value=" + value);
         }
 
         function updateEngineRPM(throttle) {
-            if (engineSound) {
+            if (engine) {
                 let rpm = 800 + (throttle / 100) * 7000; // Scale throttle to RPM
-                engineSound.setRPM(rpm);
+                engine.setRPM(rpm);
             }
         }
 
-        // 🎮 Xbox Controller Support
+        // 🎮 Xbox Controller Support (Fix Steering Bar Sync)
         window.addEventListener("gamepadconnected", (event) => {
             xboxConnected = true;
             document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Connected!";
@@ -82,6 +84,12 @@
 
                 sendThrottle(throttleValue);
                 sendSteer(steerValue);
+
+                // Update slider visually
+                document.getElementById("throttle").value = throttleValue;
+                document.getElementById("throttleValue").innerText = throttleValue;
+                document.getElementById("steering").value = steerValue;
+                document.getElementById("steeringValue").innerText = steerValue;
             }
             requestAnimationFrame(gameLoop);
         }
