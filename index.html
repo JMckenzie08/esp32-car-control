@@ -28,7 +28,7 @@
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
 
     <script>
-        let esp32IP = "http://192.168.4.1"; // Change if ESP32 is in home Wi-Fi mode
+        let esp32IP = "http://192.168.4.1"; 
         let xboxConnected = false;
         let audioContext;
         let engineSound;
@@ -40,11 +40,9 @@
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 gainNode = audioContext.createGain();
-                gainNode.gain.value = 0.8; // Set initial volume
+                gainNode.gain.value = 0.8;
 
-                // 🔹 Load engine loop sound from GitHub
-                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/engine_loop.wav");
-
+                engineSound = await loadSound("https://drive.google.com/uc?export=download&id=15INVmEBXh25RyJA0FGP9s8fcZB_zTFUT");
 
                 engineSound.loop = true;
                 engineSound.connect(gainNode);
@@ -61,6 +59,7 @@
             let audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
             let source = audioContext.createBufferSource();
             source.buffer = audioBuffer;
+            source.playbackRate.value = 1.0;
             return source;
         }
 
@@ -88,7 +87,7 @@
         // 🎵 Adjust Engine RPM Based on Throttle
         function updateEngineRPM(throttle) {
             if (engineSound) {
-                playbackRate = 0.5 + (throttle / 100) * 1.5; // Adjust RPM scaling
+                playbackRate = 0.5 + (throttle / 100) * 1.5; 
                 engineSound.playbackRate.value = playbackRate;
             }
         }
@@ -111,7 +110,6 @@
                 sendThrottle(throttleValue);
                 sendSteer(steerValue);
 
-                // Update sliders visually
                 document.getElementById("throttle").value = throttleValue;
                 document.getElementById("throttleValue").innerText = throttleValue;
                 document.getElementById("steering").value = steerValue;
