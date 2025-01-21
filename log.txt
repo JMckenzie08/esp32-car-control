@@ -1,0 +1,344 @@
+Opened file  @  sfx\ks_bmw_m4_akrapovic.bank
+	Failed to load any samples from offset 0x00000000
+
+Found Valid FSB Header @ Offset 0x00010160
+	FileID is <FSB5>  |  Version is 0.1  |  Number of Entries 57
+	Samples are stored in PCM format (0x02)
+	FSB5 Structure Data, 32 bytes (unknown)
+		[0]  = 0x00000000
+		[1]  = 0x00000000
+		[2]  = 0x017ECB00
+		[3]  = 0x5E5E3379
+		[4]  = 0xB46893AB
+		[5]  = 0xED3A2939
+		[6]  = 0x2C4B4AFE
+		[7]  = 0x6D3B0B12
+	Verbose Sample Details
+		Base Data Offset = 94656
+		Sample[00]:  "coast2"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 65960, size = 4  |  unknown extra type (13)
+		Sample[01]:  "tyre_explosion"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 65976, size = 4  |  unknown extra type (13)
+		Sample[02]:  "7509c"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 65992, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 66516, size = 4  |  unknown extra type (13)
+		Sample[03]:  "4629b_off"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 66532, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 67056, size = 4  |  unknown extra type (13)
+		Sample[04]:  "wind_draft_mono"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0xA000009, next = 1, type = 5, offset = 67072, size = 4  |  unknown extra type (5)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 67080, size = 4  |  unknown extra type (13)
+		Sample[05]:  "3795d_vibe2"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 67096, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 67620, size = 4  |  unknown extra type (13)
+		Sample[06]:  "7348c"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 67636, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 68160, size = 4  |  unknown extra type (13)
+		Sample[07]:  "3795c_vibe"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 68176, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 68700, size = 4  |  unknown extra type (13)
+		Sample[08]:  "2"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 68716, size = 4  |  unknown extra type (13)
+		Sample[09]:  "coast4"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 68732, size = 4  |  unknown extra type (13)
+		Sample[10]:  "coast6"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 68748, size = 4  |  unknown extra type (13)
+		Sample[11]:  "6298a_off_inside"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 68764, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 69288, size = 4  |  unknown extra type (13)
+		Sample[12]:  "skid_ext_mono"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0xA000011, next = 1, type = 5, offset = 69304, size = 8  |  unknown extra type (5)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 69316, size = 4  |  unknown extra type (13)
+		Sample[13]:  "tc_ext"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 69332, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 69856, size = 4  |  unknown extra type (13)
+		Sample[14]:  "tc_int"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000619, next = 1, type = 4, offset = 69872, size = 780  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 70656, size = 4  |  unknown extra type (13)
+		Sample[15]:  "4521f"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 70672, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 71196, size = 4  |  unknown extra type (13)
+		Sample[16]:  "4925e_ex"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 71212, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 71736, size = 4  |  unknown extra type (13)
+		Sample[17]:  "Skid"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0xA000011, next = 1, type = 5, offset = 71752, size = 8  |  unknown extra type (5)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 71764, size = 4  |  unknown extra type (13)
+		Sample[18]:  "coast1"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 71780, size = 4  |  unknown extra type (13)
+		Sample[19]:  "limiter_int2"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000619, next = 1, type = 4, offset = 71796, size = 780  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 72580, size = 4  |  unknown extra type (13)
+		Sample[20]:  "5813f"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 72596, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 73120, size = 4  |  unknown extra type (13)
+		Sample[21]:  "tyre_rolling"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0xA000011, next = 1, type = 5, offset = 73136, size = 8  |  unknown extra type (5)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 73148, size = 4  |  unknown extra type (13)
+		Sample[22]:  "idle_1090"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 73164, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 73688, size = 4  |  unknown extra type (13)
+		Sample[23]:  "horn"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 73704, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 74228, size = 4  |  unknown extra type (13)
+		Sample[24]:  "7455e_ex_off"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 74244, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 74768, size = 4  |  unknown extra type (13)
+		Sample[25]:  "7240a_front"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000619, next = 1, type = 4, offset = 74784, size = 780  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 75568, size = 4  |  unknown extra type (13)
+		Sample[26]:  "coast7"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 75584, size = 4  |  unknown extra type (13)
+		Sample[27]:  "3956a_off"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 75600, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 76124, size = 4  |  unknown extra type (13)
+		Sample[28]:  "flat_tyre_mono"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000209, next = 1, type = 4, offset = 76140, size = 260  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 76404, size = 4  |  unknown extra type (13)
+		Sample[29]:  "upshift_inside"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 76420, size = 4  |  unknown extra type (13)
+		Sample[30]:  "6863g"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000619, next = 1, type = 4, offset = 76436, size = 780  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 77220, size = 4  |  unknown extra type (13)
+		Sample[31]:  "4575a_off"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 77236, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 77760, size = 4  |  unknown extra type (13)
+		Sample[32]:  "4198c"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000209, next = 1, type = 4, offset = 77776, size = 260  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 78040, size = 4  |  unknown extra type (13)
+		Sample[33]:  "gear_down_inside2"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 78056, size = 4  |  unknown extra type (13)
+		Sample[34]:  "s1_turbo"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 78072, size = 4  |  unknown extra type (13)
+		Sample[35]:  "5679b"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 78088, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 78612, size = 4  |  unknown extra type (13)
+		Sample[36]:  "wind"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8004511, next = 1, type = 4, offset = 78628, size = 8840  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 87472, size = 4  |  unknown extra type (13)
+		Sample[37]:  "coast3"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 87488, size = 4  |  unknown extra type (13)
+		Sample[38]:  "sbraaa2"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 87504, size = 4  |  unknown extra type (13)
+		Sample[39]:  "5652e_off"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000619, next = 1, type = 4, offset = 87520, size = 780  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 88304, size = 4  |  unknown extra type (13)
+		Sample[40]:  "7804d_inside"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000619, next = 1, type = 4, offset = 88320, size = 780  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 89104, size = 4  |  unknown extra type (13)
+		Sample[41]:  "upshift_ex"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 89120, size = 4  |  unknown extra type (13)
+		Sample[42]:  "door_open"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 89136, size = 4  |  unknown extra type (13)
+		Sample[43]:  "sbraaa"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 89152, size = 4  |  unknown extra type (13)
+		Sample[44]:  "flutter_4"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0xA000019, next = 1, type = 5, offset = 89168, size = 12  |  unknown extra type (5)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 89184, size = 4  |  unknown extra type (13)
+		Sample[45]:  "7402a_off_inside"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 89200, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 89724, size = 4  |  unknown extra type (13)
+		Sample[46]:  "4925a"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 89740, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 90264, size = 4  |  unknown extra type (13)
+		Sample[47]:  "limiter_ext"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 90280, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 90804, size = 4  |  unknown extra type (13)
+		Sample[48]:  "bodywork"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0xA000011, next = 1, type = 5, offset = 90820, size = 8  |  unknown extra type (5)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 90832, size = 4  |  unknown extra type (13)
+		Sample[49]:  "6971f"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 90848, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 91372, size = 4  |  unknown extra type (13)
+		Sample[50]:  "3176a_ex"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000619, next = 1, type = 4, offset = 91388, size = 780  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 92172, size = 4  |  unknown extra type (13)
+		Sample[51]:  "idle_1090_off"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 92188, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 92712, size = 4  |  unknown extra type (13)
+		Sample[52]:  "idle_1090"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 92728, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 93252, size = 4  |  unknown extra type (13)
+		Sample[53]:  "coast5"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 93268, size = 4  |  unknown extra type (13)
+		Sample[54]:  "door_close"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 93284, size = 4  |  unknown extra type (13)
+		Sample[55]:  "downshift_ext"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 93300, size = 4  |  unknown extra type (13)
+		Sample[56]:  "5490a_front"
+			Freq ID: 8, 44100 Hz
+			EXTRA: raw = 0x8000411, next = 1, type = 4, offset = 93316, size = 520  |  unknown extra type (4)
+			EXTRA: raw = 0x1A000008, next = 0, type = 13, offset = 93840, size = 4  |  unknown extra type (13)
+
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\coast2.wav  (159,246 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\tyre_explosion.wav  (63,310 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\7509c.wav  (417,838 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\4629b_off.wav  (535,342 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\wind_draft_mono.wav  (987,950 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\3795d_vibe2.wav  (1,700,334 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\7348c.wav  (534,830 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\3795c_vibe.wav  (1,755,630 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\2.wav  (58,254 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\coast4.wav  (197,486 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\coast6.wav  (160,398 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\6298a_off_inside.wav  (1,195,470 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\skid_ext_mono.wav  (300,014 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\tc_ext.wav  (237,006 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\tc_int.wav  (231,246 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\4521f.wav  (673,550 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\4925e_ex.wav  (1,697,230 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\Skid.wav  (288,526 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\coast1.wav  (147,022 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\limiter_int2.wav  (22,702 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\5813f.wav  (1,144,270 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\tyre_rolling.wav  (887,982 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\idle_1090.wav  (421,646 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\horn.wav  (296,398 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\7455e_ex_off.wav  (923,246 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\7240a_front.wav  (484,558 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\coast7.wav  (214,926 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\3956a_off.wav  (379,534 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\flat_tyre_mono.wav  (788,142 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\upshift_inside.wav  (45,134 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\6863g.wav  (3,301,198 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\4575a_off.wav  (365,006 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\4198c.wav  (418,254 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\gear_down_inside2.wav  (70,478 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\s1_turbo.wav  (267,118 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\5679b.wav  (417,934 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\wind.wav  (1,365,998 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\coast3.wav  (202,222 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\sbraaa2.wav  (60,782 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\5652e_off.wav  (364,366 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\7804d_inside.wav  (1,214,478 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\upshift_ex.wav  (24,238 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\door_open.wav  (51,694 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\sbraaa.wav  (29,710 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\flutter_4.wav  (1,523,822 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\7402a_off_inside.wav  (1,170,094 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\4925a.wav  (507,534 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\limiter_ext.wav  (82,862 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\bodywork.wav  (1,928,686 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\6971f.wav  (1,233,998 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\3176a_ex.wav  (937,038 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\idle_1090_off.wav  (833,262 bytes)
+	Duplicate samplename was found; extracted filename has been tagged (2) to avoid conflict
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\idle_1090 (2).wav  (867,790 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\coast5.wav  (199,534 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\door_close.wav  (48,846 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\downshift_ext.wav  (38,542 bytes)
+	Wrote WAVE header with format PCM (1)
+File successfully extracted  ->  sfx-samples\5490a_front.wav  (385,742 bytes)
+
