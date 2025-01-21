@@ -27,20 +27,21 @@
 
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
 
-    <!-- Engine Sound Files -->
-    <audio id="idle" src="https://jmckenzie08.github.io/esp32-car-control/idle.wav" preload="auto" loop></audio>
-    <audio id="rev" src="https://jmckenzie08.github.io/esp32-car-control/rev.wav" preload="auto" loop></audio>
-    <audio id="max" src="https://jmckenzie08.github.io/esp32-car-control/max_rpm.wav" preload="auto" loop></audio>
+    <!-- Engine Sound File -->
+    <audio id="engineSound" src="https://jmckenzie08.github.io/esp32-car-control/engine_loop.wav" preload="auto" loop></audio>
 
     <script>
         let esp32IP = "http://192.168.4.1"; 
         let xboxConnected = false;
-        let lastThrottleZone = "idle"; // Track last sound played
+        let audioEnabled = false;
+        let lastThrottle = 0; // Stores last throttle value
 
         function enableAudio() {
-            document.getElementById("idle").play();
-            document.getElementById("idle").pause(); 
-            alert("Engine sound enabled! Move throttle to hear engine sounds.");
+            let engineSound = document.getElementById("engineSound");
+            engineSound.play();
+            engineSound.pause(); // Ensure browser allows audio
+            audioEnabled = true;
+            alert("Engine sound enabled! Move throttle to change RPM.");
         }
 
         async function connectToESP32() {
@@ -62,28 +63,20 @@
         }
 
         function updateEngineSound(throttle) {
-            let idle = document.getElementById("idle");
-            let rev = document.getElementById("rev");
-            let max = document.getElementById("max");
+            let engineSound = document.getElementById("engineSound");
+            if (!audioEnabled) return;
 
-            let newZone = "idle"; 
+            let newPlaybackRate = 0.5 + (throttle / 100) * 1.5; // Scale RPM between 0.5x to 2x speed
 
-            if (throttle >= 70) {
-                newZone = "max";
-            } else if (throttle > 10) {
-                newZone = "rev";
+            if (Math.abs(lastThrottle - throttle) > 5) { // Prevent unnecessary updates
+                engineSound.playbackRate = newPlaybackRate;
+                lastThrottle = throttle;
             }
 
-            if (newZone !== lastThrottleZone) {
-                idle.pause();
-                rev.pause();
-                max.pause();
-
-                if (newZone === "idle") idle.play();
-                if (newZone === "rev") rev.play();
-                if (newZone === "max") max.play();
-
-                lastThrottleZone = newZone;
+            if (throttle > 0 && engineSound.paused) {
+                engineSound.play(); // Ensure it starts playing when throttle is increased
+            } else if (throttle === 0) {
+                engineSound.pause(); // Pause when idle
             }
         }
 
