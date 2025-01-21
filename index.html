@@ -8,13 +8,11 @@
         body { text-align: center; font-family: Arial, sans-serif; overflow: hidden; }
         button { font-size: 20px; padding: 10px; margin: 10px; width: 150px; }
         input { width: 80%; }
-        #joystick-container { width: 150px; height: 150px; background: lightgray; border-radius: 50%; position: relative; margin: auto; touch-action: none; }
-        #joystick { width: 50px; height: 50px; background: black; border-radius: 50%; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
     </style>
 </head>
 <body>
     <h1>ESP32 Car Controller</h1>
-    <p>Use the joystick or Xbox controller to drive the car.</p>
+    <p>Use the throttle slider or Xbox controller to drive the car.</p>
 
     <button onclick="enableAudio()">Start Audio</button>
     <button onclick="connectToESP32()">Connect to ESP32</button>
@@ -24,18 +22,12 @@
     <input type="range" id="throttle" min="0" max="100" step="1" oninput="sendThrottle(this.value)">
 
     <br><br>
-    <div id="joystick-container">
-        <div id="joystick"></div>
-    </div>
-    <p>Steering: <span id="steeringValue">50</span>%</p>
-
-    <br><br>
     <button onclick="sendSteer(0)">⬅ Full Left</button>
     <button onclick="sendSteer(100)">Full Right ➡</button>
 
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
 
-    <!-- Engine Sound Files (Updated WAV format) -->
+    <!-- Engine Sound Files (WAV format) -->
     <audio id="idle" src="https://jmckenzie08.github.io/esp32-car-control/idle.wav" preload="auto" loop></audio>
     <audio id="rev" src="https://jmckenzie08.github.io/esp32-car-control/rev.wav" preload="auto" loop></audio>
     <audio id="max" src="https://jmckenzie08.github.io/esp32-car-control/max_rpm.wav" preload="auto" loop></audio>
@@ -44,7 +36,7 @@
         let esp32IP = "http://192.168.4.1"; // Change if ESP32 is in home Wi-Fi mode
         let xboxConnected = false;
         let audioEnabled = false;
-        let lastThrottleZone = "idle"; // Track last sound playing
+        let lastThrottleZone = "idle"; // Track last played sound
 
         function enableAudio() {
             document.getElementById("idle").play();
@@ -65,7 +57,6 @@
         }
 
         async function sendSteer(value) {
-            document.getElementById("steeringValue").innerText = value;
             fetch(esp32IP + "/steer?value=" + value);
         }
 
@@ -78,13 +69,12 @@
 
             let newZone = "idle"; // Default to idle
 
-            if (throttle > 50) {
-                newZone = "max";
+            if (throttle >= 75) {
+                newZone = "max"; // Force play max_rpm.wav past 75%
             } else if (throttle > 0) {
                 newZone = "rev";
             }
 
-            // Only switch audio if the zone actually changes
             if (newZone !== lastThrottleZone) {
                 idle.pause();
                 rev.pause();
@@ -94,7 +84,7 @@
                 if (newZone === "rev") rev.play();
                 if (newZone === "max") max.play();
 
-                lastThrottleZone = newZone; // Store current sound zone
+                lastThrottleZone = newZone; // Store last played sound
             }
         }
 
@@ -118,16 +108,15 @@
             setTimeout(gameLoop, 50); // Throttle updates to 50ms
         }
 
-        // 🕹 Improved Joystick Performance
-        document.getElementById("joystick-container").addEventListener("touchmove", function(event) {
-            event.preventDefault();
+        // 🕹 Touch Steering (Joystick Hidden but Functional)
+        document.addEventListener("touchmove", function(event) {
             let touch = event.touches[0];
-            let dx = touch.clientX - this.offsetLeft - this.offsetWidth / 2;
-            let steerValue = Math.round(((dx / (this.offsetWidth / 2)) + 1) * 50);
+            let dx = touch.clientX - window.innerWidth / 2;
+            let steerValue = Math.round(((dx / (window.innerWidth / 2)) + 1) * 50);
             sendSteer(Math.max(0, Math.min(100, steerValue)));
         });
 
-        document.getElementById("joystick-container").addEventListener("touchend", function() {
+        document.addEventListener("touchend", function() {
             sendSteer(50);
         });
     </script>
