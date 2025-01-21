@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP32 Car Controller</title>
+    <script src="https://cdn.jsdelivr.net/gh/Antonio-R1/engine-sound-generator/enginesound.min.js"></script>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; overflow: hidden; }
         button { font-size: 20px; padding: 10px; margin: 10px; width: 150px; }
@@ -12,9 +13,9 @@
 </head>
 <body>
     <h1>ESP32 Car Controller</h1>
-    <p>Use the throttle slider or Xbox controller to drive the car.</p>
+    <p>Use the throttle & steering sliders or Xbox controller to drive the car.</p>
 
-    <button onclick="enableAudio()">Start Audio</button>
+    <button onclick="startEngine()">Start Engine</button>
     <button onclick="connectToESP32()">Connect to ESP32</button>
 
     <br><br>
@@ -22,30 +23,23 @@
     <input type="range" id="throttle" min="0" max="100" step="1" oninput="sendThrottle(this.value)">
 
     <br><br>
-    <button onclick="sendSteer(0)">⬅ Full Left</button>
-    <button onclick="sendSteer(100)">Full Right ➡</button>
+    <label>Steering: <span id="steeringValue">50</span>%</label>
+    <input type="range" id="steering" min="0" max="100" step="1" oninput="sendSteer(this.value)">
 
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
-
-    <!-- Engine Sound Files (WAV format) -->
-    <audio id="idle" src="https://jmckenzie08.github.io/esp32-car-control/idle.wav" preload="auto" loop></audio>
-    <audio id="rev" src="https://jmckenzie08.github.io/esp32-car-control/rev.wav" preload="auto" loop></audio>
-    <audio id="max" src="https://jmckenzie08.github.io/esp32-car-control/max_rpm.wav" preload="auto" loop></audio>
 
     <script>
         let esp32IP = "http://192.168.4.1"; // Change if ESP32 is in home Wi-Fi mode
         let xboxConnected = false;
-        let audioEnabled = false;
-        let lastThrottleZone = "idle"; // Track last played sound
-        let lastThrottleUpdate = Date.now();
+        let engineSound;
 
-        function enableAudio() {
-            let idle = document.getElementById("idle");
-            idle.volume = 0.8; // Lower volume slightly to prevent clipping
-            idle.play();
-            idle.pause();
-            audioEnabled = true;
-            alert("Audio enabled! Move throttle to hear engine sounds.");
+        function startEngine() {
+            engineSound = new EngineSound({
+                exhaustCount: 2,
+                volume: 0.8
+            });
+            engineSound.start();
+            alert("Engine sound started! Move throttle to change RPM.");
         }
 
         async function connectToESP32() {
@@ -56,74 +50,23 @@
             document.getElementById("throttleValue").innerText = value;
             document.getElementById("throttle").value = value;
 
-            if (Date.now() - lastThrottleUpdate < 100) return; // Limit updates to every 100ms
-            lastThrottleUpdate = Date.now();
-
             fetch(esp32IP + "/throttle?value=" + value);
-            updateEngineSound(value);
+            updateEngineRPM(value);
         }
 
         async function sendSteer(value) {
+            document.getElementById("steeringValue").innerText = value;
             fetch(esp32IP + "/steer?value=" + value);
         }
 
-        function updateEngineSound(throttle) {
-            if (!audioEnabled) return;
-
-            let idle = document.getElementById("idle");
-            let rev = document.getElementById("rev");
-            let max = document.getElementById("max");
-
-            let newZone = "idle"; // Default to idle
-
-            if (throttle >= 70) {
-                newZone = "max"; // Ensure max_rpm.wav plays smoothly
-            } else if (throttle > 10) {
-                newZone = "rev"; // Allow rev.wav to play above 10%
-            }
-
-            if (newZone !== lastThrottleZone) {
-                if (newZone === "idle") {
-                    fadeIn(idle);
-                    fadeOut(rev);
-                    fadeOut(max);
-                } else if (newZone === "rev") {
-                    fadeOut(idle);
-                    fadeIn(rev);
-                    fadeOut(max);
-                } else if (newZone === "max") {
-                    fadeOut(idle);
-                    fadeOut(rev);
-                    fadeIn(max);
-                }
-                lastThrottleZone = newZone; // Store last played sound
+        function updateEngineRPM(throttle) {
+            if (engineSound) {
+                let rpm = 800 + (throttle / 100) * 7000; // Scale throttle to RPM
+                engineSound.setRPM(rpm);
             }
         }
 
-        function fadeIn(audioElement) {
-            audioElement.volume = 0;
-            audioElement.play();
-            let fade = setInterval(() => {
-                if (audioElement.volume < 0.8) {
-                    audioElement.volume += 0.05;
-                } else {
-                    clearInterval(fade);
-                }
-            }, 50);
-        }
-
-        function fadeOut(audioElement) {
-            let fade = setInterval(() => {
-                if (audioElement.volume > 0.1) {
-                    audioElement.volume -= 0.05;
-                } else {
-                    audioElement.pause();
-                    clearInterval(fade);
-                }
-            }, 50);
-        }
-
-        // 🎮 Xbox Controller Support (Optimized for Mobile)
+        // 🎮 Xbox Controller Support
         window.addEventListener("gamepadconnected", (event) => {
             xboxConnected = true;
             document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Connected!";
@@ -140,20 +83,8 @@
                 sendThrottle(throttleValue);
                 sendSteer(steerValue);
             }
-            requestAnimationFrame(gameLoop); // Optimized refresh for mobile
+            requestAnimationFrame(gameLoop);
         }
-
-        // 🕹 Touch Steering (Hidden but Functional)
-        document.addEventListener("touchmove", function(event) {
-            let touch = event.touches[0];
-            let dx = touch.clientX - window.innerWidth / 2;
-            let steerValue = Math.round(((dx / (window.innerWidth / 2)) + 1) * 50);
-            sendSteer(Math.max(0, Math.min(100, steerValue)));
-        });
-
-        document.addEventListener("touchend", function() {
-            sendSteer(50);
-        });
     </script>
 </body>
 </html>
