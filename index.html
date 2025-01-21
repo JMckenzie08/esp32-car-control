@@ -34,12 +34,12 @@
         let esp32IP = "http://192.168.4.1"; 
         let xboxConnected = false;
         let audioEnabled = false;
-        let lastThrottle = 0; // Stores last throttle value
+        let lastThrottle = 0;
 
         function enableAudio() {
             let engineSound = document.getElementById("engineSound");
             engineSound.play();
-            engineSound.pause(); // Ensure browser allows audio
+            engineSound.pause(); // Ensures browser allows audio
             audioEnabled = true;
             alert("Engine sound enabled! Move throttle to change RPM.");
         }
@@ -66,9 +66,9 @@
             let engineSound = document.getElementById("engineSound");
             if (!audioEnabled) return;
 
-            let newPlaybackRate = 0.5 + (throttle / 100) * 1.5; // Scale RPM between 0.5x to 2x speed
+            let newPlaybackRate = 0.5 + (throttle / 100) * 1.5; 
 
-            if (Math.abs(lastThrottle - throttle) > 5) { // Prevent unnecessary updates
+            if (Math.abs(lastThrottle - throttle) > 2) { // Prevents unnecessary updates
                 engineSound.playbackRate = newPlaybackRate;
                 lastThrottle = throttle;
             }
@@ -81,7 +81,7 @@
         }
 
         // 🎮 Xbox Controller Support
-        window.addEventListener("gamepadconnected", (event) => {
+        window.addEventListener("gamepadconnected", () => {
             xboxConnected = true;
             document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Connected!";
             requestAnimationFrame(gameLoop);
@@ -97,6 +97,7 @@
                 sendThrottle(throttleValue);
                 sendSteer(steerValue);
 
+                // Update slider visuals
                 document.getElementById("throttle").value = throttleValue;
                 document.getElementById("throttleValue").innerText = throttleValue;
                 document.getElementById("steering").value = steerValue;
