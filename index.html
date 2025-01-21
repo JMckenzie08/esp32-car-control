@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP32 Car Controller</title>
-    <script src="https://markeasting.github.io/engine/engine.js"></script>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; overflow: hidden; }
         button { font-size: 20px; padding: 10px; margin: 10px; width: 150px; }
@@ -31,16 +30,35 @@
     <script>
         let esp32IP = "http://192.168.4.1"; // Change if ESP32 is in home Wi-Fi mode
         let xboxConnected = false;
-        let engine = null;
+        let audioContext;
+        let engineSound;
+        let throttleLevel = 0;
+        let gainNode;
+        let playbackRate = 1.0;
 
-        function startEngine() {
-            engine = new Engine({ 
-                volume: 0.8,
-                minRPM: 800,
-                maxRPM: 7000
-            });
-            engine.start();
+        async function startEngine() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.gain.value = 0.8; // Set initial volume
+
+                // Load engine sound
+                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/engine_loop.wav");
+                engineSound.loop = true;
+                engineSound.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                engineSound.start(0);
+            }
             alert("Engine sound started! Move throttle to change RPM.");
+        }
+
+        async function loadSound(url) {
+            let response = await fetch(url);
+            let arrayBuffer = await response.arrayBuffer();
+            let audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            let source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            return source;
         }
 
         async function connectToESP32() {
@@ -50,6 +68,7 @@
         async function sendThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
             document.getElementById("throttle").value = value;
+            throttleLevel = value / 100;
 
             fetch(esp32IP + "/throttle?value=" + value);
             updateEngineRPM(value);
@@ -62,13 +81,13 @@
         }
 
         function updateEngineRPM(throttle) {
-            if (engine) {
-                let rpm = 800 + (throttle / 100) * 7000; // Scale throttle to RPM
-                engine.setRPM(rpm);
+            if (engineSound) {
+                playbackRate = 0.5 + (throttle / 100) * 1.5; // Adjust RPM scaling
+                engineSound.playbackRate.value = playbackRate;
             }
         }
 
-        // 🎮 Xbox Controller Support (Fix Steering Bar Sync)
+        // 🎮 Xbox Controller Support
         window.addEventListener("gamepadconnected", (event) => {
             xboxConnected = true;
             document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Connected!";
@@ -85,7 +104,7 @@
                 sendThrottle(throttleValue);
                 sendSteer(steerValue);
 
-                // Update slider visually
+                // Update sliders visually
                 document.getElementById("throttle").value = throttleValue;
                 document.getElementById("throttleValue").innerText = throttleValue;
                 document.getElementById("steering").value = steerValue;
