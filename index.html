@@ -42,7 +42,8 @@
                 gainNode = audioContext.createGain();
                 gainNode.gain.value = 0.8;
 
-                engineSound = await loadSound("https://drive.google.com/uc?export=download&id=15INVmEBXh25RyJA0FGP9s8fcZB_zTFUT");
+                engineSound = await loadSound("https://raw.githubusercontent.com/JMckenzie08/esp32-car-control/main/sounds/engine_loop.wav");
+
 
                 engineSound.loop = true;
                 engineSound.connect(gainNode);
