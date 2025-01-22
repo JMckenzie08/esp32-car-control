@@ -4,22 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESP32 Car Controller</title>
-
-    <!-- Add dat.GUI for Engine Stats -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
-
     <style>
         body { text-align: center; font-family: Arial, sans-serif; overflow: hidden; }
         button { font-size: 20px; padding: 10px; margin: 10px; width: 150px; }
         input { width: 80%; }
     </style>
-
-    <!-- Load External JavaScript Files -->
-    <script src="https://jmckenzie08.github.io/esp32-car-control/js/AudioManager.js"></script>
-    <script src="https://jmckenzie08.github.io/esp32-car-control/js/Engine.js"></script>
-    <script src="https://jmckenzie08.github.io/esp32-car-control/js/Drivetrain.js"></script>
-    <script src="https://jmckenzie08.github.io/esp32-car-control/js/main.js"></script>
-
 </head>
 <body>
     <h1>ESP32 Car Controller</h1>
@@ -40,43 +29,64 @@
 
     <script>
         let esp32IP = "http://192.168.4.1"; 
-        let audioManager = new AudioManager();
-        let engine = new Engine();
-        let drivetrain = new Drivetrain();
+        let xboxConnected = false;
+        let audioContext, engineSound, gainNode;
+        let lastThrottle = 0;
 
         async function startEngine() {
-            await audioManager.init({
-                lowRPM: "https://jmckenzie08.github.io/esp32-car-control/sounds/BAC_Mono_offlow.wav",
-                midRPM: "https://jmckenzie08.github.io/esp32-car-control/sounds/BAC_Mono_onmid.wav",
-                highRPM: "https://jmckenzie08.github.io/esp32-car-control/sounds/BAC_Mono_offhigh.wav",
-                revving: "https://jmckenzie08.github.io/esp32-car-control/sounds/REV.wav",
-                limiter: "https://jmckenzie08.github.io/esp32-car-control/sounds/limiter.wav"
-            });
-            audioManager.play("lowRPM");
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.gain.value = 0.8;
+
+                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/engine_loop.wav");
+
+                engineSound.loop = true;
+                engineSound.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                engineSound.start(0);
+            }
+            alert("Engine sound started! Move throttle to change RPM.");
+        }
+
+        async function loadSound(url) {
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.loop = true;
+            source.connect(gainNode);
+            return source;
+        }
+
+        async function connectToESP32() {
+            alert("Ensure your phone is connected to ESP32's Wi-Fi, then use this page.");
         }
 
         function updateThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
-            engine.updateThrottle(value);
-
-            if (value > 80) {
-                audioManager.play("highRPM");
-            } else if (value > 30) {
-                audioManager.play("midRPM");
-            } else {
-                audioManager.play("lowRPM");
-            }
-
+            document.getElementById("throttle").value = value;
+            
             fetch(esp32IP + "/throttle?value=" + value);
+            updateEngineSound(value);
         }
 
         function updateSteering(value) {
             document.getElementById("steeringValue").innerText = value;
+            document.getElementById("steering").value = value;
             fetch(esp32IP + "/steer?value=" + value);
+        }
+
+        function updateEngineSound(throttle) {
+            if (!engineSound) return;
+            let newPlaybackRate = 0.5 + (throttle / 100) * 1.5;
+            engineSound.playbackRate.value = newPlaybackRate;
         }
 
         // 🎮 Xbox Controller Support
         window.addEventListener("gamepadconnected", () => {
+            xboxConnected = true;
             document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Connected!";
             requestAnimationFrame(gameLoop);
         });
@@ -85,22 +95,17 @@
             let gamepad = navigator.getGamepads()[0];
             if (gamepad) {
                 let throttleValue = Math.round((gamepad.buttons[7].value) * 100);
-                updateThrottle(throttleValue);
+                let steerValue = Math.round((gamepad.axes[0] + 1) * 50);
+
+                if (throttleValue !== lastThrottle) {
+                    updateThrottle(throttleValue);
+                    lastThrottle = throttleValue;
+                }
+
+                updateSteering(steerValue);
             }
             requestAnimationFrame(gameLoop);
         }
-
-        // 📊 Engine Stats GUI
-        let gui = new dat.GUI();
-        let engineStats = {
-            rpm: engine.rpm,
-            gear: drivetrain.currentGear,
-            throttle: 0
-        };
-
-        gui.add(engineStats, 'rpm').listen();
-        gui.add(engineStats, 'gear').listen();
-        gui.add(engineStats, 'throttle').listen();
     </script>
 </body>
 </html>
