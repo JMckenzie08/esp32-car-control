@@ -25,6 +25,9 @@
     <label>Steering: <span id="steeringValue">50</span>%</label>
     <input type="range" id="steering" min="0" max="100" step="1" oninput="updateSteering(this.value)">
 
+    <br><br>
+    <button onclick="shiftGearUp()">Upshift</button>
+
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
 
     <script>
@@ -37,6 +40,10 @@
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume(); // 🔹 Ensure AudioContext is active
+                }
+
                 // Load Engine Sounds
                 engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/engine_loop.wav");
                 idleSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/idle.wav");
@@ -46,7 +53,6 @@
                 shiftDownSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/downshift.wav");
                 coastSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/coast.wav");
 
-                // Start Idle Sound
                 idleSound.loop = true;
                 idleSound.start(0);
             }
@@ -82,7 +88,7 @@
                 engineSound.stop();
                 idleSound.loop = true;
                 idleSound.play();
-                coastSound.play(); // Play coasting sound when letting off throttle
+                coastSound.play();
             }
 
             if (value === 100) {
@@ -95,12 +101,16 @@
         function shiftGear(newGear) {
             if (newGear !== lastGear) {
                 if (newGear > lastGear) {
-                    shiftUpSound.play(); // Play upshift sound
+                    shiftUpSound.play();
                 } else {
-                    shiftDownSound.play(); // Play downshift sound
+                    shiftDownSound.play();
                 }
                 lastGear = newGear;
             }
+        }
+
+        function shiftGearUp() {
+            shiftGear(lastGear + 1);
         }
 
         // 🎮 Xbox Controller Support
