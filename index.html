@@ -29,22 +29,26 @@
 
     <script>
         let esp32IP = "http://192.168.4.1"; 
-        let xboxConnected = false;
-        let audioContext, engineSound, gainNode;
+        let audioContext, engineSound, idleSound, revSound, limiterSound, shiftUpSound, shiftDownSound, coastSound;
         let lastThrottle = 0;
+        let lastGear = 1;
 
         async function startEngine() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                gainNode = audioContext.createGain();
-                gainNode.gain.value = 0.8;
 
-                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/engine_loop.wav");
+                // Load Engine Sounds
+                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/engine_loop.wav");
+                idleSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/idle.wav");
+                revSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/rev.wav");
+                limiterSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/limiter.wav");
+                shiftUpSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/upshift.wav");
+                shiftDownSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/downshift.wav");
+                coastSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/sounds/coast.wav");
 
-                engineSound.loop = true;
-                engineSound.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                engineSound.start(0);
+                // Start Idle Sound
+                idleSound.loop = true;
+                idleSound.start(0);
             }
             alert("Engine sound started! Move throttle to change RPM.");
         }
@@ -55,33 +59,48 @@
             const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
             const source = audioContext.createBufferSource();
             source.buffer = audioBuffer;
-            source.loop = true;
-            source.connect(gainNode);
+            source.connect(audioContext.destination);
             return source;
-        }
-
-        async function connectToESP32() {
-            alert("Ensure your phone is connected to ESP32's Wi-Fi, then use this page.");
         }
 
         function updateThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
             document.getElementById("throttle").value = value;
-            
             fetch(esp32IP + "/throttle?value=" + value);
-            updateEngineSound(value);
+
+            if (value > 0) {
+                idleSound.stop();
+                engineSound.loop = true;
+                engineSound.play();
+                let playbackRate = 0.5 + (value / 100) * 1.5;
+                engineSound.playbackRate.value = playbackRate;
+
+                if (value > lastThrottle + 10) {
+                    revSound.play();
+                }
+            } else {
+                engineSound.stop();
+                idleSound.loop = true;
+                idleSound.play();
+                coastSound.play(); // Play coasting sound when letting off throttle
+            }
+
+            if (value === 100) {
+                limiterSound.play();
+            }
+
+            lastThrottle = value;
         }
 
-        function updateSteering(value) {
-            document.getElementById("steeringValue").innerText = value;
-            document.getElementById("steering").value = value;
-            fetch(esp32IP + "/steer?value=" + value);
-        }
-
-        function updateEngineSound(throttle) {
-            if (!engineSound) return;
-            let newPlaybackRate = 0.5 + (throttle / 100) * 1.5;
-            engineSound.playbackRate.value = newPlaybackRate;
+        function shiftGear(newGear) {
+            if (newGear !== lastGear) {
+                if (newGear > lastGear) {
+                    shiftUpSound.play(); // Play upshift sound
+                } else {
+                    shiftDownSound.play(); // Play downshift sound
+                }
+                lastGear = newGear;
+            }
         }
 
         // 🎮 Xbox Controller Support
@@ -99,10 +118,14 @@
 
                 if (throttleValue !== lastThrottle) {
                     updateThrottle(throttleValue);
-                    lastThrottle = throttleValue;
                 }
 
-                updateSteering(steerValue);
+                if (gamepad.buttons[12].pressed) {
+                    shiftGear(lastGear + 1);
+                }
+                if (gamepad.buttons[13].pressed) {
+                    shiftGear(lastGear - 1);
+                }
             }
             requestAnimationFrame(gameLoop);
         }
