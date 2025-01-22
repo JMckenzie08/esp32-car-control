@@ -14,41 +14,57 @@
     <h1>ESP32 Car Controller</h1>
     <p>Use the throttle & steering sliders or Xbox controller to drive the car.</p>
 
-    <button onclick="enableAudio()">Start Engine</button>
+    <button onclick="startEngine()">Start Engine</button>
     <button onclick="connectToESP32()">Connect to ESP32</button>
 
     <br><br>
     <label>Throttle: <span id="throttleValue">0</span>%</label>
-    <input type="range" id="throttle" min="0" max="100" step="1" oninput="sendThrottle(this.value)">
+    <input type="range" id="throttle" min="0" max="100" step="1" oninput="updateThrottle(this.value)">
 
     <br><br>
     <label>Steering: <span id="steeringValue">50</span>%</label>
-    <input type="range" id="steering" min="0" max="100" step="1" oninput="sendSteer(this.value)">
+    <input type="range" id="steering" min="0" max="100" step="1" oninput="updateSteering(this.value)">
 
     <p id="xboxStatus">🎮 Xbox Controller: Not Connected</p>
-
-    <!-- Engine Sound File -->
-    <audio id="engineSound" src="https://jmckenzie08.github.io/esp32-car-control/engine_loop.wav" preload="auto" loop></audio>
 
     <script>
         let esp32IP = "http://192.168.4.1"; 
         let xboxConnected = false;
-        let audioEnabled = false;
+        let audioContext, engineSound, gainNode;
         let lastThrottle = 0;
 
-        function enableAudio() {
-            let engineSound = document.getElementById("engineSound");
-            engineSound.play();
-            engineSound.pause(); // Ensures browser allows audio
-            audioEnabled = true;
-            alert("Engine sound enabled! Move throttle to change RPM.");
+        async function startEngine() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.gain.value = 0.8;
+
+                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/engine_loop.wav");
+
+                engineSound.loop = true;
+                engineSound.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                engineSound.start(0);
+            }
+            alert("Engine sound started! Move throttle to change RPM.");
+        }
+
+        async function loadSound(url) {
+            let response = await fetch(url);
+            let arrayBuffer = await response.arrayBuffer();
+            let audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            let source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.loop = true;
+            source.connect(gainNode);
+            return source;
         }
 
         async function connectToESP32() {
             alert("Ensure your phone is connected to ESP32's Wi-Fi, then use this page.");
         }
 
-        async function sendThrottle(value) {
+        async function updateThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
             document.getElementById("throttle").value = value;
             
@@ -56,28 +72,16 @@
             updateEngineSound(value);
         }
 
-        async function sendSteer(value) {
+        async function updateSteering(value) {
             document.getElementById("steeringValue").innerText = value;
             document.getElementById("steering").value = value;
             fetch(esp32IP + "/steer?value=" + value);
         }
 
         function updateEngineSound(throttle) {
-            let engineSound = document.getElementById("engineSound");
-            if (!audioEnabled) return;
-
-            let newPlaybackRate = 0.5 + (throttle / 100) * 1.5; 
-
-            if (Math.abs(lastThrottle - throttle) > 2) { // Prevents unnecessary updates
-                engineSound.playbackRate = newPlaybackRate;
-                lastThrottle = throttle;
-            }
-
-            if (throttle > 0 && engineSound.paused) {
-                engineSound.play(); // Ensure it starts playing when throttle is increased
-            } else if (throttle === 0) {
-                engineSound.pause(); // Pause when idle
-            }
+            if (!engineSound) return;
+            let newPlaybackRate = 0.5 + (throttle / 100) * 1.5;
+            engineSound.playbackRate.value = newPlaybackRate;
         }
 
         // 🎮 Xbox Controller Support
@@ -88,20 +92,17 @@
         });
 
         function gameLoop() {
-            if (!xboxConnected) return;
             let gamepad = navigator.getGamepads()[0];
             if (gamepad) {
                 let throttleValue = Math.round((gamepad.buttons[7].value) * 100);
                 let steerValue = Math.round((gamepad.axes[0] + 1) * 50);
 
-                sendThrottle(throttleValue);
-                sendSteer(steerValue);
+                if (throttleValue !== lastThrottle) {
+                    updateThrottle(throttleValue);
+                    lastThrottle = throttleValue;
+                }
 
-                // Update slider visuals
-                document.getElementById("throttle").value = throttleValue;
-                document.getElementById("throttleValue").innerText = throttleValue;
-                document.getElementById("steering").value = steerValue;
-                document.getElementById("steeringValue").innerText = steerValue;
+                updateSteering(steerValue);
             }
             requestAnimationFrame(gameLoop);
         }
