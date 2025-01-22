@@ -39,25 +39,32 @@
                 gainNode = audioContext.createGain();
                 gainNode.gain.value = 0.8;
 
-                engineSound = await loadSound("https://jmckenzie08.github.io/esp32-car-control/engine_loop.wav");
+                if (audioContext.state === "suspended") {
+                    await audioContext.resume();
+                }
 
+                engineSound = await loadSound("https://jmckenzie08.github.io/repository-name/engine_loop.wav");
                 engineSound.loop = true;
                 engineSound.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 engineSound.start(0);
             }
-            alert("Engine sound started! Move throttle to change RPM.");
+            alert("Engine sound enabled! Move throttle to change RPM.");
         }
 
         async function loadSound(url) {
-            const response = await fetch(url);
-            const arrayBuffer = await response.arrayBuffer();
-            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-            const source = audioContext.createBufferSource();
-            source.buffer = audioBuffer;
-            source.loop = true;
-            source.connect(gainNode);
-            return source;
+            try {
+                const response = await fetch(url);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.loop = true;
+                source.connect(gainNode);
+                return source;
+            } catch (error) {
+                console.error("Error loading audio:", error);
+            }
         }
 
         async function connectToESP32() {
@@ -67,15 +74,25 @@
         function updateThrottle(value) {
             document.getElementById("throttleValue").innerText = value;
             document.getElementById("throttle").value = value;
-            
-            fetch(esp32IP + "/throttle?value=" + value);
+
+            try {
+                fetch(`${esp32IP}/throttle?value=${value}`).catch(err => console.log("ESP32 Not Connected:", err));
+            } catch (error) {
+                console.error("Throttle error:", error);
+            }
+
             updateEngineSound(value);
         }
 
         function updateSteering(value) {
             document.getElementById("steeringValue").innerText = value;
             document.getElementById("steering").value = value;
-            fetch(esp32IP + "/steer?value=" + value);
+
+            try {
+                fetch(`${esp32IP}/steer?value=${value}`).catch(err => console.log("ESP32 Not Connected:", err));
+            } catch (error) {
+                console.error("Steering error:", error);
+            }
         }
 
         function updateEngineSound(throttle) {
@@ -91,6 +108,11 @@
             requestAnimationFrame(gameLoop);
         });
 
+        window.addEventListener("gamepaddisconnected", () => {
+            xboxConnected = false;
+            document.getElementById("xboxStatus").innerText = "🎮 Xbox Controller: Not Connected";
+        });
+
         function gameLoop() {
             let gamepad = navigator.getGamepads()[0];
             if (gamepad) {
@@ -104,7 +126,10 @@
 
                 updateSteering(steerValue);
             }
-            requestAnimationFrame(gameLoop);
+
+            if (xboxConnected) {
+                requestAnimationFrame(gameLoop);
+            }
         }
     </script>
 </body>
